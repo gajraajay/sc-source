@@ -1,92 +1,55 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { MainContext } from '../main-context';
+import TeamList from '../TeamList/TeamList';
+import Team from '../Team/Team';
+import CookieController from '../utils';
+
+const cookie = CookieController.sharedInstance;
 
 class CutomRouter extends React.Component {
   constructor( props ) {
-
     super( props );
     this.state = props.props;
   }
 
-  componentDidMount( ) {}
-
-  componentDidUpdate( prevProps, prevState ) {}
-
   render( ) {
-    return (      
+    return (
       <MainContext.Consumer>{( mainContext ) => {
-      return <Router>
-        <div>
-          <Route
-            exact
-            path="/"
-            component={( props ) => {
-            if (localStorage.getItem( 'email' )) {
-              // return <h1>{mainContext.user.email}</h1>
-            } else {
-              // return <h1 onClick={mainContext.updateName}>please login...</h1>
-            }
-            return<p>helloworld</p>
-          }} />
-          <Route
-            exact
-            path="/v"
-            component={( ) => {
+          if ( mainContext == null ) {
+            //TODO Redirect Login Page website            
+            return <TeamList />
+          } else 
             return <Router>
               <div>
-                <ul>
-                  <li>
-                    <Link to="/">Home</Link>
-                  </li>
-                  <li>
-                    <Link to="/asomwthi">About</Link>
-                  </li>
-                  <li>
-                    <Link to="/a">Topics</Link>
-                  </li>
-                </ul>
-                <hr />
                 <Route
                   exact
                   path="/"
                   component={( props ) => {
-                  return <h1 onClick={this.props.props.updateName}>this is cool 1</h1>
-                }} />
-                <Route
-                  exact
-                  path="/v"
-                  component={( ) => {
-                  return <h1 onClick={this.props.props.updateName}></h1>
-                }} />
-                <Route
-                  exact
-                  path="/a"
-                  component={( ) => {
-                  return <h1 onClick={this.props.props.updateName}>{JSON.stringify( this.props )}</h1>
+                  if ( cookie.getCookie( "userInfo" )[ 0 ].contact) {
+                    return (
+                      <div
+                        className="container-fluid"
+                        style={{
+                        overflow: 'hidden'
+                      }}>
+                        {(( ) => {
+                          if ( mainContext.team.team_id == 0 ) {
+                            return <TeamList />
+                          } else {
+                            return <Team mainContext={mainContext} />
+                          }
+                        })( )}</div>
+                    )
+                  } else {
+                    return <h1 onClick={mainContext.updateName( )}>please login...</h1>
+                  }
                 }} />
               </div>
             </Router>
-          }} />
-          <Route
-            exact
-            path="/a"
-            component={( ) => {
-            return <h1 onClick={this.props.props.updateName}>{JSON.stringify( this.props )}</h1>
-          }} />
-
-        </div>
-      </Router>}}
+        }}
       </MainContext.Consumer>
     )
   }
 }
-
-// const MyRouter = ( ) => {
-//   return <MainContext.Consumer>{( mainContext ) => {
-//       return <CutomRouter props={mainContext} />
-//     }}</MainContext.Consumer>
-// };
 export default CutomRouter;

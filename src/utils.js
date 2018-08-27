@@ -3,7 +3,6 @@ import Cookies from 'universal-cookie';
 export const cookies = new Cookies();
 
 export default class CookieController {
-
     constructor(){        
         console.log("creating new instance");
     }
